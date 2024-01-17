@@ -1,4 +1,11 @@
-veracode_sast_pipeline_scan:
+name: security-action
+on:
+  push:
+    branches: [feature/abc1]
+
+jobs:
+
+  veracode_sast_pipeline_scan:
     runs-on: ubuntu-latest
     container:
       image: veracode/pipeline-scan:latest
