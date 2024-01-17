@@ -22,6 +22,47 @@ jobs:
         curl -sSL https://download.sourceclear.com/ci.sh | bash -s -- scan $EXTRA_ARGS
     continue-on-error: true
 
+  generate-sandbox-name:
+    runs-on: ubuntu-latest
+    needs: [veracode-software-composition-analisys]
+    outputs:
+      sandbox-name: ${{ steps.set-sandbox-name.outputs.sandbox-name }}
+    steps:
+      # Creates the sandbox(logical release descriptive status of current branch)
+      - id: set-sandbox-name
+        name: set-sandbox-name
+        run: |
+          echo ${{ github.head_ref }}
+          branchName="${{ github.head_ref }}"
+          if [[ -z "$branchName" ]]; then
+            branchName="${{ github.ref }}"
+          fi
+          
+          if [[ $branchName == *"master"* ]]; then
+          echo "::set-output name=sandbox-name::Master"
+          elif [[ $branchName == *"main"* ]]; then
+          echo "::set-output name=sandbox-name::Main"
+          elif [[ $branchName == *"elease/"* ]]; then
+          echo "::set-output name=sandbox-name::$branchName"
+          elif [[ $branchName == *"feature/"* ]]; then
+          echo "::set-output name=sandbox-name::$branchName"
+          else
+          echo "::set-output name=sandbox-name::Development"
+          fi        
+
+  veracode_sast_sandbox_scan:
+    runs-on: ubuntu-latest
+    needs: [veracode-software-composition-analisys]
+    container:
+      image: veracode/api-wrapper-java:latest
+      options: --user root
+    steps:
+    - uses: actions/checkout@master
+    - name: scan 
+      run: |
+          zip -r -v upload.zip . -i '*.js' '*.html' '*.json'
+          java -jar /opt/veracode/api-wrapper.jar -vid "${{ secrets.VERACODE_ID }}" -vkey "${{ secrets.VERACODE_KEY }}" -action UploadAndScan -createprofile true -appname "lf-api-verademo-js" -version "${{ github.run_id }}" -filepath upload.zip -createsandbox true sandboxname "${{needs.generate-sandbox-name.outputs.sandbox-name}}" 
+
   veracode_sast_pipeline_scan:
     runs-on: ubuntu-latest
     container:
