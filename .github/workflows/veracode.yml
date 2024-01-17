@@ -18,4 +18,4 @@ jobs:
         run: |
           zip -r -v upload.zip . -i '*.js' '*.html' '*.json'
           java -jar /opt/veracode/pipeline-scan.jar -vid "${{ secrets.VERACODE_ID }}" -vkey "${{ secrets.VERACODE_KEY }}" -f upload.zip
-    continue-on-error: true
+    continue-on-error: true 
