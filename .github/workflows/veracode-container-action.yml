@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Archive Release
+    - name: sca scan
       env:
         SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
       run: |
@@ -17,7 +17,7 @@ jobs:
         export SRCCLR_SCM_REF_TYPE="branch"
         export SRCCLR_SCM_REV=${{ github.run_id }}
         export SRCCLR_SCM_TYPE="GITHUB"
-        export EXTRA_ARGS='--update-advisor --uri-as-name --ref {{ github.ref_name }}' 
+        export EXTRA_ARGS='--update-advisor --uri-as-name --ref ${{ github.ref_name }}' 
 
         curl -sSL https://download.sourceclear.com/ci.sh | bash -s -- scan $EXTRA_ARGS
     continue-on-error: true
