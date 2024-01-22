@@ -1,0 +1,38 @@
+name: security-action
+on:
+  push:
+    branches: [feature/container-veracode-action]
+
+jobs:
+
+  veracode-software-composition-analisys:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Archive Release
+      env:
+        SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
+      run: |
+        export SRCCLR_SCM_REF=${{ github.workflow }}
+        export SRCCLR_SCM_REF_TYPE="branch"
+        export SRCCLR_SCM_REV=${{ github.run_id }}
+        export SRCCLR_SCM_TYPE="GITHUB"
+        export EXTRA_ARGS='--update-advisor --uri-as-name --ref {{ github.ref_name }}' 
+
+        curl -sSL https://download.sourceclear.com/ci.sh | bash -s -- scan $EXTRA_ARGS
+    continue-on-error: true
+
+  veracode_sast_pipeline_scan:
+    runs-on: ubuntu-latest
+    container:
+      image: veracode/pipeline-scan:latest
+      options: --user root
+    steps:
+      - name: checkout
+        uses: actions/checkout@master
+          
+      - name: archive and upload scan 
+        run: |
+          zip -r -v upload.zip . -i '*.js' '*.html' '*.htm' '*.json' '*.html' '*.ts' '*.tsx' '*.css' '*.jsp' '*.vue'
+          java -jar /opt/veracode/pipeline-scan.jar -vid "${{ secrets.VERACODE_ID }}" -vkey "${{ secrets.VERACODE_KEY }}" -f upload.zip
+    continue-on-error: true 
