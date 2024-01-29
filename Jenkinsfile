@@ -1,7 +1,7 @@
 pipeline {
     agent any 
     environment {
-        caminhoPacote = 'uploadToVeracode/nodegoat.tar.gz'
+        caminhoPacote = 'uploadToVeracode/upload.tar.gz'
         wrapperVersion = '23.8.12.0'
         appProfile = 'verademo-javascript-api'
     }
