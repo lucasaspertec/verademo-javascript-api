@@ -74,7 +74,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@master
         
-      - name: archive and upload scan
+      - name: archive and upload policy scan
         run: |
           zip -r -v upload.zip . -i '*.js' '*.html' '*.htm' '*.json' '*.html' '*.ts' '*.tsx' '*.css' '*.jsp' '*.vue'
           java -jar /opt/veracode/api-wrapper.jar -vid "${{ secrets.VERACODE_ID }}" -vkey "${{ secrets.VERACODE_KEY }}" -action UploadAndScan -createprofile true -appname "verademo-javascript-api" -version "${{ github.run_id }}" -filepath upload.zip -deleteincompletescan 2 -teams "Showroom_LucasFerreira" -criticality "Medium" -lifecyclestage "InDevelopmentPreAlpha" 
