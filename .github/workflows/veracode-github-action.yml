@@ -23,7 +23,7 @@ jobs:
 
   veracode-sca:
     runs-on: ubuntu-latest
-    name: Scan repository with Veracode SCA
+    name: Veracode SCA
 
     steps:
       - name: Checkout
@@ -34,7 +34,7 @@ jobs:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
         uses: veracode/veracode-sca@v2.1.10
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.TOKEN }}
           create-issues: false  
 
   veracode_sast_pipeline_scan:
