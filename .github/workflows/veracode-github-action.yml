@@ -13,7 +13,7 @@ jobs:
       with:
         type: 'zip'
         filename: 'upload.zip'
-        recursive_exclusions: '*.git* /*node_modules/* .editorconfig *.github/ *.png *.jpg  *.txt *.md *.sample *.yml *.yaml *.zip'
+        recursive_exclusions: '*.git* /*node_modules/* *.github* *.png *.jpg *.txt *.md *.sample *.yml *.yaml *.zip'
 
     - name: salvando artefato
       uses: actions/upload-artifact@v3
