@@ -1,0 +1,22 @@
+name: security-action
+on:
+  push:
+    branches: [feature/github-actions]
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Archive Release
+      uses: thedoctor0/zip-release@0.7.5
+      with:
+        type: 'zip'
+        filename: 'upload.zip'
+        recursive_exclusions: '*.git* /*node_modules/* .editorconfig *.github/ *.png *.jpg  *.txt *.md *.sample *.yml *.yaml *.zip'
+
+    - name: salvando artefato
+      uses: actions/upload-artifact@v3
+      with:
+          name: upload.zip
+          path: .
