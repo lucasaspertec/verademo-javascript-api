@@ -13,10 +13,32 @@ jobs:
       with:
         type: 'zip'
         filename: 'release.zip'
-        exclusions: '*.git* *.github* /*node_modules/* *.txt *.png *.jpg *.sample *.yml *.yaml *.zip'
+        exclusions: '*.git* *.github* /*node_modules/* *.txt *.png *.jpg *.sample *.yml *.yaml *.zip *.md *.pdf'
 
     - name: salvando artefato
       uses: actions/upload-artifact@v3
       with:
           name: upload.zip
           path: .
+
+  veracode_sast_pipeline_scan:
+    needs: archive
+    runs-on: ubuntu-latest
+    name: veracode sast pipeline scan
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      
+      - name: get archive
+        uses: actions/download-artifact@v3
+        with:
+          name: upload.zip
+
+      - name: pipeline-scan action step
+        id: pipeline-scan
+        uses: veracode/Veracode-pipeline-scan-action@v1.0.12
+        with:
+          vid: ${{ secrets.VERACODE_ID }}
+          vkey: ${{ secrets.VERACODE_KEY }}
+          file: "upload.zip" 
