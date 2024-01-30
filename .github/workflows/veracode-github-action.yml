@@ -12,14 +12,14 @@ jobs:
       uses: thedoctor0/zip-release@0.7.5
       with:
         type: 'zip'
-        filename: 'release.zip'
+        filename: 'upload.zip'
         exclusions: '*.git* *.github* /*node_modules/* *.txt *.png *.jpg *.sample *.yml *.yaml *.zip *.md *.pdf'
 
-    - name: salvando artefato
-      uses: actions/upload-artifact@v3
-      with:
-          name: upload.zip
-          path: .
+      - name: Publicando Artefato
+        uses: actions/upload-artifact@v2
+        with:
+          name: pacoteVeracode
+          path: upload.zip
 
   veracode_sast_pipeline_scan:
     needs: archive
@@ -27,14 +27,10 @@ jobs:
     name: veracode sast pipeline scan
 
     steps:
-      - name: checkout repo
-        uses: actions/checkout@v3
-      
-      - name: get archive
-        uses: actions/download-artifact@v3 
+      - name: Download Artefato
+        uses: actions/download-artifact@v2
         with:
-          name: upload.zip
-          path: .
+          name: pacoteVeracode
 
       - name: pipeline-scan action step
         id: pipeline-scan
