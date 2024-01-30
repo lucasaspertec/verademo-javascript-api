@@ -9,11 +9,9 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Archive Release
-      uses: thedoctor0/zip-release@0.7.5
+    - uses: montudor/action-zip@v1
       with:
-        type: 'zip'
-        filename: 'upload.zip'
-        recursive_exclusions: '*.git* /*node_modules/* *.github* *.png *.jpg *.txt *.md *.sample *.yml *.yaml *.zip'
+        args: zip -r -v upload.zip . -i '*.js' '*.html' '*.htm' '*.json' '*.html' '*.ts' '*.tsx' '*.css' '*.jsp' '*.vue'
 
     - name: salvando artefato
       uses: actions/upload-artifact@v3
