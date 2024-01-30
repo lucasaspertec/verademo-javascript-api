@@ -29,13 +29,36 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         
-      - name: Run Veracode SCA
-        env:
+      - name: Veracode SCA Scan
+        env: 
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-        uses: veracode/veracode-sca@v2.1.10
+        run: curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan --update-advisor --uri-as-name --ref ${{ github.ref_name }}
+
+  veracode_sast_sanbox_scan:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check out main branch
+        uses: actions/checkout@v2
+        
+      - name: Download Artefato
+        uses: actions/download-artifact@v2
         with:
-          github_token: ${{ secrets.TOKEN }}
-          create-issues: false  
+          name: pacoteVeracode
+
+      - name: Veracode Upload And Scan
+        uses: veracode/veracode-uploadandscan-action@0.2.6
+        with:
+          appname: 'verademo-javascript-api'
+          createprofile: false
+          filepath: 'upload.zip'
+          vid: '${{ secrets.VERACODE_ID }}'
+          vkey: '${{ secrets.VERACODE_KEY }}'
+          createsandbox: 'true'
+          sandboxname: "${{ github.ref }}"
+          version: "${{ github.run_id }}"
+          scantimeout: 0
 
   veracode_sast_pipeline_scan:
     runs-on: ubuntu-latest
