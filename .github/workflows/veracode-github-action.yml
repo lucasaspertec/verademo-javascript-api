@@ -64,7 +64,7 @@ jobs:
   veracode_sast_policy_scan:
     name: veracode policy scan
     runs-on: ubuntu-latest
-    needs: [ archive ]
+    needs: [ archive, veracode_sast_sandbox_scan, veracode-sca ]
     
     steps:
       - name: Check out main branch
@@ -88,7 +88,7 @@ jobs:
 
   veracode_sast_pipeline_scan:
     runs-on: ubuntu-latest
-    needs: [ archive, veracode_sast_sanbox_scan]
+    needs: [ archive, veracode_sast_sandbox_scan ]
     name: veracode sast pipeline scan
 
     steps:
@@ -104,4 +104,4 @@ jobs:
           vid: ${{ secrets.VERACODE_ID }}
           vkey: ${{ secrets.VERACODE_KEY }}
           file: "upload.zip"
-          fail_build: true
+          fail_build: "true"
