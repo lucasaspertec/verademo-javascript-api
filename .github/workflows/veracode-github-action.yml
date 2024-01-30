@@ -19,7 +19,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: pacoteVeracode
-          path: veracode.zip
+          path: upload.zip
           
   veracode_sast_pipeline_scan:
     runs-on: ubuntu-latest
