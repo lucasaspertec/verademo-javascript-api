@@ -7,23 +7,23 @@ jobs:
   archive:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Archive Release
-      uses: thedoctor0/zip-release@0.7.5
-      with:
-        type: 'zip'
-        filename: 'upload.zip'
-        exclusions: '*.git* *.github* /*node_modules/* *.txt *.png *.jpg *.sample *.yml *.yaml *.zip *.md *.pdf'
-
+      - uses: actions/checkout@v2
+      - name: Empacotamento dos arquivos
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: 'zip'
+          filename: 'upload.zip'
+          exclusions: '*.git* *.github* /*node_modules/* *.txt *.png *.jpg *.sample *.yml *.yaml *.zip *.md *.pdf'
+          
       - name: Publicando Artefato
         uses: actions/upload-artifact@v2
         with:
           name: pacoteVeracode
-          path: upload.zip
-
+          path: veracode.zip
+          
   veracode_sast_pipeline_scan:
-    needs: archive
     runs-on: ubuntu-latest
+    needs: archive
     name: veracode sast pipeline scan
 
     steps:
