@@ -17,14 +17,14 @@ pipeline {
         stage('Archive') { 
             steps {
                 sh 'mkdir uploadToVeracode'
-                sh 'find . -name "*.js" -o -name "*.html" -o -name "*.htm" -o -name "*.ts" -o -name "*.tsx" -o -name "*.json" -o -name "*.css" -o -name "*.jsp" -o -name "*.vue" | tar --exclude=./uploadToVeracode --exclude=./.git --exclude=./.github --exclude=./.gitignore --exclude=./.png --exclude=./.Jenkinsfile -cvzf uploadToVeracode/nodegoat.tar.gz .'
+                sh 'find . -name "*.js" -o -name "*.html" -o -name "*.htm" -o -name "*.ts" -o -name "*.tsx" -o -name "*.json" -o -name "*.css" -o -name "*.jsp" -o -name "*.vue" | tar --exclude=./uploadToVeracode --exclude=./.git --exclude=./.github --exclude=./.gitignore --exclude=./.png --exclude=./.Jenkinsfile -cvzf uploadToVeracode/upload.tar.gz .'
             }
         }
 
         stage('Veracode SCA - Agent Scan') { 
             steps {
                 withCredentials([string(credentialsId: 'SRCCLR_API_TOKEN', variable: 'SRCCLR_API_TOKEN')]) {
-                    sh 'curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --update-advisor --uri-as-name || true'
+                    sh 'curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --update-advisor --uri-as-name --allow-dirty || true'
                 }
             }
         }
@@ -50,12 +50,12 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'veracode-credentials', passwordVariable: 'VKEY', usernameVariable: 'VID')]) {
                     sh 'curl -sSO https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip'
                     sh 'unzip -o pipeline-scan-LATEST.zip'
-                    sh 'java -jar pipeline-scan.jar --veracode_api_id "${VID}" --veracode_api_key "${VKEY}" --file ${caminhoPacote} --project_name "Java-VeraDemo" || true'
+                    sh 'java -jar pipeline-scan.jar --veracode_api_id "${VID}" --veracode_api_key "${VKEY}" --file ${caminhoPacote} --project_name ${appProfile}'
                 }
             }
         }        
 
-        stage('Veracode SAST Pipeline Scan- Baseline File') { 
+        /*stage('Veracode SAST Pipeline Scan- Baseline File') { 
             steps {
                 withCredentials([usernamePassword(credentialsId: 'veracode-credentials', passwordVariable: 'VKEY', usernameVariable: 'VID')]) {
                     sh 'curl -sSO https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip'
@@ -65,6 +65,6 @@ pipeline {
                     sh 'java -jar pipeline-scan.jar --veracode_api_id "${VID}" --veracode_api_key "${VKEY}" --file ${caminhoPacote} --project_name ${appProfile} --baseline_file results.json'
                 }
             }    
-        }
+        }*/
     }
 }
