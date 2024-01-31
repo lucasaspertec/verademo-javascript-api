@@ -32,7 +32,7 @@ pipeline {
        stage('Veracode SAST - Sandbox Scan') { 
             steps {
                 withCredentials([usernamePassword(credentialsId: 'veracode-credentials', passwordVariable: 'VKEY', usernameVariable: 'VID')]) {
-                    veracode applicationName: "${appProfile}", createSandbox: true, criticality: 'Medium', deleteIncompleteScanLevel: '2', sandboxName: '"${GIT_BRANCH}"', scanName: '"${BUILD_NUMBER}"', uploadIncludesPattern: "${caminhoPacote}", vid: "${VID}", vkey: "${VKEY}"      
+                    veracode applicationName: "${appProfile}", createSandbox: true, criticality: 'Medium', deleteIncompleteScanLevel: '2', sandboxName: "${GIT_BRANCH}", scanName: '"${BUILD_NUMBER}"', uploadIncludesPattern: "${caminhoPacote}", vid: "${VID}", vkey: "${VKEY}"      
                 }
             }
         }
